@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 /**class node*/
@@ -30,17 +31,23 @@ public:
     addXHeader(x);
     addYHeader(y);
     node *new_node = new node(value);
-    add_x(new_node,x);
-    add_y(new_node,y);
+    add_x(new_node,x, y);
+    //add_y(new_node,y);
 
     //insert node
   }
-  void add_x(node *newNode, int x){
+  void add_x(node *newNode, int x, int y){
     node *temp = head;
     while(temp->data!= x){
       temp = temp->right;
     }
+    while(temp->down!=NULL){
+      cout<<"Tiene nodo "<<temp->data<<"->"<<temp->down->data;
+      temp = temp->down;
+    }
+
     if(temp->down == NULL){
+      cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
       temp->down = newNode;
       newNode->up = temp;
     }
@@ -51,7 +58,12 @@ public:
     while(temp->data!= y){
       temp = temp->down;
     }
+    while(temp->right!=NULL){
+      cout<<"Tiene nodo "<<temp->data<<"->"<<temp->right->data;
+      temp = temp->right;
+    }
     if(temp->right == NULL){
+       cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
       temp->right = newNode;
       newNode->left = temp;
     }
@@ -167,26 +179,39 @@ void printNodesY(){
   }
   cout<<"\n";
 }
+
+void graphMatrix(){
+  string contenidoDot = "digraph G {\"A\" -> \"B\"  }";  
+  string titulo = "demo2.dot";
+   ofstream fs(titulo.c_str());
+   fs << contenidoDot << endl;
+   fs.close();
+   system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
+   system("cmd /c demo_dot.png");
+  cout<<contenidoDot;
+}
+
 };
 int main() {
   /* code */
   matrix *sm = new matrix;
   sm->add(10,2,2);
-  sm->add(12,5,1);
+  sm->add(22,5,1);
   sm->add(14,3,4);
-  sm->add(22,5,6);
-  sm->add(18,7,8);
-  sm->add(7,4,5);
+  sm->add(12,5,6);
+  
+  //sm->add(7,4,5);
   sm->add(17,9,4);
+  sm->add(18,9,2);
   sm->add(47,6,3);
-
-  sm->printHeaders();
+  sm->add(99,3,6);
+  sm->add(7,4,5);
+  //sm->graphMatrix();
+  //sm->printHeaders();
   cout<<"\n";
   sm->printNodesX();
   cout<<"\n";
-  sm->printNodesY();
-  //node *temp = new node(1);
-  //cout<<temp->data;
+  //sm->printNodesY();
 
  return 0;
 }
