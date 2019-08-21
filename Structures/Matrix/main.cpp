@@ -36,7 +36,7 @@ public:
     addYHeader(y);
     node *new_node = new node(value,x,y);
     add_x(new_node,x, y);
-    //add_y(new_node,x,y);
+    add_y(new_node,x,y);
 
     //insert node
   }
@@ -53,7 +53,7 @@ public:
     }*/
     
     if(temp->down == NULL){
-      cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
+      //cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
       temp->down = newNode;
       newNode->up = temp;
     }else{
@@ -61,11 +61,11 @@ public:
         
         temp = temp->down;
       }
-      cout<<"salio porque y del temp = "<<temp->data<<" es menor a la y de:"<<newNode->data<<"\n";
+      //cout<<"salio porque y del temp = "<<temp->data<<" es menor a la y de:"<<newNode->data<<"\n";
       if(temp->down == NULL){
         temp->down = newNode;
         newNode->up = temp;
-        cout<<"SE UNIOO: "<<temp->data<<"->"<<newNode->data<<"\n";
+        //cout<<"SE UNIOO: "<<temp->data<<"->"<<newNode->data<<"\n";
       }else{
         node *aux = temp->down;
         temp->down = newNode;
@@ -73,11 +73,11 @@ public:
         newNode->down = aux;
         aux->up = newNode;
 
-        cout<<"SE UNIOO: "<<temp->data<<"->"<<newNode->data<<"->"<<aux->data<<"\n";
+        //cout<<"SE UNIOO: "<<temp->data<<"->"<<newNode->data<<"->"<<aux->data<<"\n";
       }
       //temp->down = newNode;
       //newNode->up = temp;
-      cout<<"salio porque y del temp = "<<temp->data<<" es menor a la y de:"<<newNode->data<<"\n";
+      //cout<<"salio porque y del temp = "<<temp->data<<" es menor a la y de:"<<newNode->data<<"\n";
 
     }
     
@@ -87,15 +87,29 @@ public:
     node *temp = head;
     while(temp->data!= y){
       temp = temp->down;
-    }
+    }/*
     while(temp->right!=NULL){
       cout<<"Tiene nodo "<<temp->data<<"->"<<temp->right->data;
       temp = temp->right;
-    }
+    }*/
     if(temp->right == NULL){
-       cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
+       //cout<<"se unira: "<<temp->data<<"->"<<newNode->data<<"\n";
       temp->right = newNode;
       newNode->left = temp;
+    }else{
+      while(temp->right!=NULL && temp->right->x<newNode->x){
+        temp = temp->right;
+      }
+      if(temp->right ==NULL){
+        temp->right = newNode;
+        newNode->left = temp;
+      }else{
+        node *aux = temp->right;
+        temp->right = newNode;
+        newNode->left = temp;
+        newNode->right = aux;
+        aux->left = newNode;
+      }
     }
   }
   void addXHeader(int x){
@@ -220,32 +234,116 @@ void printNodesX(){
 
 }
 void printNodesY(){
-  node *temp = head->down;
-  while(temp->down!= NULL){
-    cout<<temp->data;
-    cout<<"->";
-    if(temp->right!=NULL){
-      cout<<temp->right->data;
+ node *temp = head->down;
+  node *aux = temp->down;
+  node *aux2 = temp->down;
+  
+  string contenidoY="";
+  while(temp->down!=NULL){
+    aux = temp;
+    aux2 = temp->right;
+    while(aux->right!=NULL){
+      
+      cout<<aux->data;
+      cout<<"->";
+      aux = aux->right;
     }
+    cout<<aux->data;
     cout<<"\n";
     temp = temp->down;
   }
-  cout<<temp->data;
-  cout<<"->";
-  if(temp->right!=NULL){
-    cout<<temp->right->data;
+  while(temp->right!=NULL){
+    cout<<temp->data;
+    cout<<"->";
+    temp = temp->right;
   }
-  cout<<"\n";
+  cout<<temp->data;
+
+
 }
 
 void graphMatrix(){
-  string contenidoDot = "digraph G {\"A\" -> \"B\"  }";  
+  string contenidoDot = "digraph G { \n node [shape=record];\n";  
   string titulo = "demo2.dot";
-   ofstream fs(titulo.c_str());
-   fs << contenidoDot << endl;
-   fs.close();
-   system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
-   system("cmd /c demo_dot.png");
+  string ranksame="{rank = same 0 ";
+  string encabezados = "";
+  node *temp = head;
+  //ahora encabezados en Y
+  //ranksame += "{rank = same ";
+  temp = head->down;
+  encabezados+="\n";
+  encabezados+="0->";
+    while (temp->down != NULL) {
+      encabezados+="\n";
+      encabezados+="Y";
+    //  ranksame+="Y";
+      encabezados += to_string(temp->data);
+      //ranksame += to_string(temp->data) + " ";
+      //cout<<temp->data;
+      encabezados+="->";
+      //cout<<"\n";
+      if(temp->down!=NULL){
+        encabezados+="Y";
+        encabezados+= to_string(temp->down->data);
+        encabezados+="[dir = both]";
+        //encabezados+="\n";
+      }
+      temp = temp->down;
+    }
+    //encabezados+="Y";
+    //encabezados += to_string(temp->data);
+
+
+  // imprimir encabezados x
+  encabezados+="\n";
+  encabezados+="0->";
+  
+      temp = head->right;
+      while (temp->right != NULL) {
+        encabezados+="\n";
+        encabezados+="X";
+        ranksame+="X";
+        encabezados += to_string(temp->data); 
+        ranksame += to_string(temp->data) + " ";
+        //cout<<temp->data;
+        encabezados += "->";
+        if(temp->right!=NULL){
+          encabezados+="X";
+          encabezados+= to_string(temp->right->data);
+          encabezados+="[dir = both]";
+        }
+        //cout<<"->";
+        temp = temp->right;
+      }
+      //encabezados+="X";
+      ranksame+="X";
+      //encabezados += to_string(temp->data);
+      ranksame += to_string(temp->data);
+      //cout<<temp->data;
+      cout<<"\n";
+  // fin encabezados x  
+  ranksame += "}";
+  //ES UN RANK SAME POR CADA FILA
+  //contenidoDot+= ranksame;
+  
+    //ranksame+="Y";
+    //ranksame += to_string(temp->data);
+    //cout<<temp->data;
+    //ranksame+="}";
+    cout<<"\n";
+  //HACER TODOS LOS RANKSAMES
+  //nodos de Y 
+ 
+
+  contenidoDot+= ranksame;
+
+  contenidoDot+= encabezados;
+  contenidoDot+= "}";
+   //ofstream fs(titulo.c_str());
+   //fs << contenidoDot << endl;
+   //fs.close();
+   //system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
+   //system("cmd /c demo_dot.png");
   cout<<contenidoDot;
 }
 
@@ -268,9 +366,10 @@ int main() {
   //sm->graphMatrix();
   //sm->printHeaders();
   cout<<"\n";
-  sm->printNodesX();
+ // sm->printNodesX();
   cout<<"\n";
-  //sm->printNodesY();
-
+  cout<<"\n";
+  sm->printNodesY();
+ // sm->graphMatrix();
  return 0;
 }
