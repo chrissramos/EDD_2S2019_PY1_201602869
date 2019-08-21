@@ -241,7 +241,7 @@ void printNodesY(){
   string contenidoY="";
   while(temp->down!=NULL){
     aux = temp;
-    aux2 = temp->right;
+    //aux2 = temp->right;
     while(aux->right!=NULL){
       
       cout<<aux->data;
@@ -258,10 +258,102 @@ void printNodesY(){
     temp = temp->right;
   }
   cout<<temp->data;
-
-
 }
 
+string graphYNodes(){
+  node *temp = head->down;
+  node *aux = temp->down;
+  node *nod = head->down;
+  string contenidoY = "\n";
+  string ranksame = "";
+  string contenidoTodo="";
+  while(temp->down!=NULL){
+    contenidoY+="Y";
+    ranksame += "{rank = same  Y" + to_string(temp->data) + " " ;
+    contenidoY += to_string(temp->data);
+    contenidoY+="->";
+    if(temp->right!=NULL){
+      aux = temp->right;
+      while(aux->right!=NULL){
+        ranksame += " " + to_string(aux->data) + " ";
+        contenidoY+= to_string(aux->data);
+        contenidoY+="->";
+        aux = aux->right;
+      }
+      ranksame += " " + to_string(aux->data) + " ";
+      contenidoY+= to_string(aux->data);
+    }
+    ranksame+="}\n";
+    contenidoY +="\n";
+    temp = temp->down;
+  }
+  contenidoY+="Y";
+  ranksame += "{rank = same  Y" + to_string(temp->data) + " " ;
+  contenidoY+=to_string(temp->data);
+  contenidoY+="->";
+  if(temp->right!=NULL){
+    aux = temp->right;
+  }
+  while(aux->right!=NULL){
+    ranksame += " " + to_string(aux->data) + " ";
+     contenidoY+= to_string(aux->data);
+     contenidoY+="->";
+      aux = aux->right;
+  }
+  ranksame += " " + to_string(aux->data) + " }";
+  contenidoY+= to_string(aux->data);
+
+  contenidoTodo = ranksame + contenidoY;
+  //cout<<contenidoTodo;
+  return contenidoTodo;
+}
+string graphXNodes(){
+  node *temp = head->right;
+  node *aux = temp->right;
+  node *nod = head->right;
+  string contenidoX="\n";
+  string ranksame = "";
+  string contenidoTodo="";
+  while(temp->right!=NULL){
+    contenidoX+="X";
+    ranksame += "{rank = same  X" + to_string(temp->data) + " " ;
+    contenidoX+= to_string(temp->data);
+    contenidoX+= "->";
+    if(temp->down!=NULL){
+      aux = temp->down;
+      while(aux->down!=NULL){
+        ranksame += " " + to_string(aux->data) + " ";
+        contenidoX+= to_string(aux->data);
+        contenidoX+="->";
+        aux = aux->down;
+      }
+      ranksame += " " + to_string(aux->data) + " ";
+      contenidoX+= to_string(aux->data);
+    }
+    ranksame+="}\n";
+    contenidoX +="\n";
+    temp = temp->right;
+  }
+  contenidoX+="X";
+  ranksame += "{rank = same  X" + to_string(temp->data) + " " ;
+  contenidoX+=to_string(temp->data);
+  contenidoX+="->";
+  if(temp->down!=NULL){
+    aux = temp->down;
+  }
+  while(aux->down!=NULL){
+    ranksame += " " + to_string(aux->data) + " ";
+     contenidoX+= to_string(aux->data);
+     contenidoX+="->";
+      aux = aux->down;
+  }
+  ranksame += " " + to_string(aux->data) + " }";
+  contenidoX+= to_string(aux->data);
+  contenidoTodo = ranksame + contenidoX;
+  
+  //cout<<contenidoTodo;
+  return contenidoX;
+}
 void graphMatrix(){
   string contenidoDot = "digraph G { \n node [shape=record];\n";  
   string titulo = "demo2.dot";
@@ -333,17 +425,19 @@ void graphMatrix(){
     cout<<"\n";
   //HACER TODOS LOS RANKSAMES
   //nodos de Y 
- 
-
+  
   contenidoDot+= ranksame;
+  
 
   contenidoDot+= encabezados;
+  contenidoDot+= graphYNodes();
+  contenidoDot+= graphXNodes();
   contenidoDot+= "}";
-   //ofstream fs(titulo.c_str());
-   //fs << contenidoDot << endl;
-   //fs.close();
-   //system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
-   //system("cmd /c demo_dot.png");
+   ofstream fs(titulo.c_str());
+   fs << contenidoDot << endl;
+   fs.close();
+   system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
+   system("cmd /c demo_dot.png");
   cout<<contenidoDot;
 }
 
@@ -363,13 +457,17 @@ int main() {
   sm->add(47,6,3);
   sm->add(99,3,6);
   sm->add(7,4,5);
-  //sm->graphMatrix();
+  sm->graphMatrix();
   //sm->printHeaders();
   cout<<"\n";
  // sm->printNodesX();
   cout<<"\n";
   cout<<"\n";
-  sm->printNodesY();
+  //sm->printNodesY();
+  cout<<"\n";
+  cout<<"\n";
+  //cout<<"graficandooo \n";
+ // sm->graphXNodes();
  // sm->graphMatrix();
  return 0;
 }
