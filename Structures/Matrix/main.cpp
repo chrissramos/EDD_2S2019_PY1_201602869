@@ -315,20 +315,20 @@ string graphXNodes(){
   string enlaces="";
   while(temp->right!=NULL){
     ranksame += "{rank = same " + temp->contador + " " ;
-    contenidoX+= temp->contador + "[label = " +to_string(temp->r) + "]\n";
+    contenidoX+= temp->contador + "[label = " +to_string(temp->r)+" group =" + to_string(temp->x) + "]\n";
     enlaces += "\n"+temp->contador + "->";
     //contenidoX+= "->";
     if(temp->down!=NULL){
       aux = temp->down;
       while(aux->down!=NULL){
         ranksame += " " + aux->contador + " ";
-        contenidoX+= aux->contador + " [label = " +aux->color +" ]\n";
+        contenidoX+= aux->contador + " [label = " +aux->color+" group =" + to_string(aux->x) +" ]\n";
         enlaces+=aux->contador + "->";
         //contenidoX+="->";
         aux = aux->down;
       }
       ranksame += " " + aux->contador + " ";
-      contenidoX+=  aux->contador + " [label = " +aux->color +" ]\n";
+      contenidoX+=  aux->contador + " [label = " +aux->color+" group =" + to_string(aux->x) +" ]\n";
       enlaces+= aux->contador;
       enlaces+=" [dir = both] \n";
     }
@@ -340,20 +340,20 @@ string graphXNodes(){
   //contenidoX+="X";
   ranksame += "{rank = same " + temp->contador + " " ;
   enlaces+= "\n"+ temp->contador + "->";
-  contenidoX+=temp->contador + "[label = " +to_string(temp->r) + "]\n";
+  contenidoX+=temp->contador + "[label = " +to_string(temp->r)+" group =" + to_string(temp->x) + "]\n";
   //contenidoX+="->";
   if(temp->down!=NULL){
     aux = temp->down;
   }
   while(aux->down!=NULL){
     ranksame += " " + aux->contador + " ";
-     contenidoX+=aux->contador + " [label = " +aux->color +" ]\n";
+     contenidoX+=aux->contador + " [label = " +aux->color+" group =" + to_string(aux->x) +" ]\n";
      enlaces+=aux->contador + "->";
      //contenidoX+="->";
       aux = aux->down;
   }
   ranksame +=  " " + aux->contador+ " }";
-  contenidoX+= aux->contador + " [label = " +aux->color +" ]\n";
+  contenidoX+= aux->contador + " [label = " +aux->color+" group =" + to_string(aux->x) +" ]\n";
   enlaces+=aux->contador;
   enlaces+=" [dir = both] \n";
   contenidoTodo = contenidoX + enlaces;
@@ -373,17 +373,17 @@ void graphMatrix(){
   //ranksame += "{rank = same ";
   temp = head->down;
   encabezados+="\n";
-  encabezados+=head->contador + "[label = 0]";
+  encabezados+=head->contador + "[label = 0 group =0]";
   enlacesX+= head->contador + "->";
     while (temp->down != NULL) {
       encabezados+="\n";
-      encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
+      encabezados += temp->contador + "[label =" + to_string(temp->r) +" group = 0]";
  
       enlacesX += temp->contador + "->";
       
       temp = temp->down;
     }
-    encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
+    encabezados += temp->contador + "[label =" + to_string(temp->r) +" group = 0]";
     enlacesX+= temp->contador;
     enlacesX+= " [dir = both] \n";
 
@@ -392,22 +392,22 @@ void graphMatrix(){
   encabezados+="\n";
   
     temp = head->right;
-      encabezados+=head->contador + "[label = 0]";
+      encabezados+=head->contador + "[label = 0 group = 0]";
       enlacesY+= head->contador + "->";
      
       while (temp->right != NULL) {
         encabezados+="\n";
         
-        encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
+        encabezados += temp->contador + "[label =" + to_string(temp->r) +" group =" + to_string(temp->x) +"]";
         ranksame += temp->contador + " ";
         
         enlacesY += temp->contador + "->";
         
         temp = temp->right;
       }
-     
+     encabezados+="\n";
       ranksame += temp->contador + " ";
-      encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
+      encabezados += temp->contador + "[label =" + to_string(temp->r) +" group =" + to_string(temp->x)+"]";
       enlacesY += temp->contador ;
       enlacesY +=" [dir = both] \n";
       //cout<<temp->data;
@@ -438,7 +438,7 @@ void graphMatrix(){
 
    //cout<<"ENLACES Y"<<"\n"<<enlacesY<<"\n";
   //cout<<"enlaces X:\n"<<enlacesX<<"\n\n"<<enlacesY;
-  //cout<<contenidoDot;
+  cout<<contenidoDot;
 }
 
 };
