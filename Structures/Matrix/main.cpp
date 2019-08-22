@@ -273,9 +273,11 @@ string graphYNodes(){
       ranksame +=" " + aux->contador + " ";
       contenidoY+= aux->contador + " [label = " +aux->color +" ]\n";
       enlaces+= aux->contador;
+      enlaces+=" [dir = both] \n";
     }
     ranksame+="}\n";
     contenidoY +="\n";
+    enlaces+=" [dir = both] \n";
     temp = temp->down;
   }
   //contenidoY+="Y";
@@ -294,9 +296,11 @@ string graphYNodes(){
      //contenidoY+="->";
       aux = aux->right;
   }
+ 
   ranksame += " " + aux->contador+ " }";
   contenidoY+= aux->contador + " [label = " +aux->color +" ]\n";
   enlaces+=aux->contador;
+  enlaces+=" [dir = both] \n";
   contenidoTodo = ranksame + contenidoY + enlaces;
   //cout<<contenidoTodo;
   return contenidoTodo;
@@ -326,9 +330,11 @@ string graphXNodes(){
       ranksame += " " + aux->contador + " ";
       contenidoX+=  aux->contador + " [label = " +aux->color +" ]\n";
       enlaces+= aux->contador;
+      enlaces+=" [dir = both] \n";
     }
     ranksame+="}\n";
     contenidoX +="\n";
+    //enlaces+=" [dir = both] \n";
     temp = temp->right;
   }
   //contenidoX+="X";
@@ -349,8 +355,9 @@ string graphXNodes(){
   ranksame +=  " " + aux->contador+ " }";
   contenidoX+= aux->contador + " [label = " +aux->color +" ]\n";
   enlaces+=aux->contador;
+  enlaces+=" [dir = both] \n";
   contenidoTodo = contenidoX + enlaces;
-  
+  //cout<<enlaces;
   //cout<<contenidoTodo;
   return contenidoTodo;
 }
@@ -370,30 +377,15 @@ void graphMatrix(){
   enlacesX+= head->contador + "->";
     while (temp->down != NULL) {
       encabezados+="\n";
-      //encabezados+="Y";
-    //  ranksame+="Y";
       encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
-      
-     // ranksame += temp->contador + " ";
-      //cout<<temp->data;
+ 
       enlacesX += temp->contador + "->";
-      //encabezados+="->";
-      //cout<<"\n";
-      /*if(temp->down!=NULL){
-        //encabezados+="Y";
-        encabezados+= temp->contador + "[label =" + to_string(temp->r) + "]";
-        //ranksame += temp->contador + " ";
-        enlacesX+=temp->contador+"->";
-        //encabezados+= to_string(temp->down->r);
-        //encabezados+="[dir = both]";
-        //encabezados+="\n";
-      }*/
+      
       temp = temp->down;
     }
-    //encabezados+="Y";
-    //encabezados += to_string(temp->data);
     encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
     enlacesX+= temp->contador;
+    enlacesX+= " [dir = both] \n";
 
 
   // imprimir encabezados x
@@ -408,23 +400,16 @@ void graphMatrix(){
         
         encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
         ranksame += temp->contador + " ";
-        //cout<<temp->data;
-        //encabezados += "->";
+        
         enlacesY += temp->contador + "->";
-        /*if(temp->right!=NULL){
-          encabezados+="X";
-          encabezados+= to_string(temp->right->r);
-          encabezados+="[dir = both]";
-        }*/
-        //cout<<"->";
+        
         temp = temp->right;
       }
-      //encabezados+="X";
-      //ranksame+="X";
-      //encabezados += to_string(temp->data);
+     
       ranksame += temp->contador + " ";
       encabezados += temp->contador + "[label =" + to_string(temp->r) +"]";
       enlacesY += temp->contador ;
+      enlacesY +=" [dir = both] \n";
       //cout<<temp->data;
       cout<<"\n";
 
@@ -432,13 +417,7 @@ void graphMatrix(){
 
   // fin encabezados x  
   ranksame += "}";
-  //ES UN RANK SAME POR CADA FILA
-  //contenidoDot+= ranksame;
   
-    //ranksame+="Y";
-    //ranksame += to_string(temp->data);
-    //cout<<temp->data;
-    //ranksame+="}";
     cout<<"\n";
   //HACER TODOS LOS RANKSAMES
   //nodos de Y 
@@ -456,9 +435,10 @@ void graphMatrix(){
    fs.close();
    system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
    system("cmd /c demo_dot.png");
-   //cout<<"ENLACES Y"<<"\n"<<enlacesY<<"\n";
 
-  cout<<contenidoDot;
+   //cout<<"ENLACES Y"<<"\n"<<enlacesY<<"\n";
+  //cout<<"enlaces X:\n"<<enlacesX<<"\n\n"<<enlacesY;
+  //cout<<contenidoDot;
 }
 
 };
