@@ -440,7 +440,32 @@ void graphMatrix(){
   //cout<<"enlaces X:\n"<<enlacesX<<"\n\n"<<enlacesY;
   cout<<contenidoDot;
 }
-
+void findNode(int x, int y){
+  node *temp = head->right;
+  while(temp->x!=x && temp->right!=NULL){
+    temp = temp->right;
+  }
+  if(temp->x == x){
+    cout<<"encontro coordenada X y es:"<<temp->x<<"\n";
+    while(temp->y!=y && temp->down!=NULL){
+      temp = temp->down;
+    }
+    if(temp->y == y){
+      cout<<"encontro coordenada Y y es: "<<temp->y<<"\n";
+    }
+    cout<<"coordenadas encontradas: "<<temp->x<<","<<temp->y<<" y su contenido es: "<<temp->color<<"\n";
+    cout<<"Nodo arriba: "<<temp->up->color<<"\n";
+    if(temp->down!=NULL){
+      cout<<"Nodo abajo: "<<temp->down->color<<"\n";
+    }else if(temp->right!=NULL){
+      cout<<"Nodo derecha: "<<temp->right->color<<"\n";
+    }else if(temp->left!=NULL){
+      cout<<"Nodo izquierda: "<<temp->left->color<<"\n";
+    }
+  }else{
+    cout<<"no se encontro coordenada";
+  }
+}
 };
 int main() {
   /* code */
@@ -448,45 +473,30 @@ int main() {
   matriz->add(15,10,1,1,1);
   matriz->add(3,6,2,2,2);
   matriz->add(5,2,3,3,3);
-  matriz->add(2,2,255,229,204);
-   matriz->add(15,2,255,229,204);
-   matriz->add(2,3,255,229,204);
+  matriz->add(2,2,4,4,4);
+   matriz->add(15,2,5,5,5);
+   matriz->add(2,3,6,6,6);
   
-  matriz->add(16,11,255,229,204);
-  matriz->add(4,1,255,229,204);
-  matriz->add(1,1,255,229,204);
+  matriz->add(16,11,7,7,7);
+  matriz->add(4,1,8,8,8);
+  matriz->add(1,1,9,9,9);
   
   
-  matriz->add(15,1,255,229,204);
- 
-  matriz->add(15,3,255,229,204);
-
+  matriz->add(15,1,10,10,10);
+ matriz->findNode(15,1);
+  
 
  // matriz->graphXNodes();
   //matriz->printHeaders();
   cout<<"\n";
-  matriz->graphMatrix();
+  //matriz->graphMatrix();
   //matriz->printNodesX();
   //matriz->printNodesY();
-  
-  /*sm->add(10,2,2);
-  sm->add(22,5,1);
-  sm->add(14,3,4);
-  sm->add(12,5,6);
-  
-  //sm->add(7,4,5);
-  sm->add(17,9,4);
-  sm->add(18,9,2);
-  sm->add(3,9,3);
-  sm->add(47,6,3);
-  sm->add(99,3,6);
-  sm->add(7,4,5);
-  */
+
   //sm->graphMatrix();
   
  // sm->printNodesX();
-  cout<<"\n";
-  cout<<"\n";
+ 
   //sm->printNodesY();
 
   //cout<<"graficandooo \n";
