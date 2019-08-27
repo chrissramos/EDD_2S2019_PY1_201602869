@@ -11,16 +11,21 @@ private:
 	string key;
 	Node *left;
 	Node *right;
+	int id;
 public:
 	
-	Node(string key){
+	Node(string key, int id){
 		this->key = key;
 		right = NULL;
 		left = NULL;
+		this->id=id;
 	}
 
 	string getKey(){
 		return this->key;
+	}
+	int getId(){
+		return this->id;
 	}
 
 	Node* getLeft(){
@@ -35,7 +40,9 @@ public:
 	void setKey(int key){
 		this->key = key;
 	}
-
+	void setId(int id){
+		this->id = id;
+	}
 	void setLeft(Node *left){
 		this->left = left;
 	}
@@ -137,7 +144,7 @@ void recursive_inorder(Node* current){//izq raiz der
 		recursive_inorder(current->getLeft());
 	}
 	//imprimr el valor de la raiz
-	cout <<current->getKey();
+	cout <<current->getId()<<current->getKey();
 	arrInorder.push_back(current->getKey());
 	cout <<"->";
 	//llamar recursivamente al sub arbol der 
@@ -205,7 +212,8 @@ void graphPostorder(){
 void graph(){
 	string titulo = "aBinario.dot";
     string contenido = "digraph G { \n rankdir=TB;\n node [shape = record, style=filled, fillcolor=seashell2];\n";
-	contenido+= contenidoDot(root);
+	//contenido+= contenidoDot(root);
+	contenido+=contenidoInterno(root);
 	contenido+="}";
 	//cout<<contenido;
 	ofstream fs(titulo.c_str());
@@ -232,29 +240,55 @@ string contenidoDot(Node* current){
 	}
 	return contenido;
 }
+string contenidoInterno(Node* current){
+	string contenido ="";
+	
+	if(current->getLeft()==NULL && current->getRight() == NULL){
+		contenido = "nodo"+ to_string(current->getId())+ "[ label= \"" + current->getKey() + "\"];\n";
 
+	}else{
+		contenido = "nodo"+ to_string(current->getId())+ "[ label= \" <C0>|" + current->getKey() + "|<C1> \"];\n";
+	}
+	if(current->getLeft()!=NULL){
+		contenido+= contenidoInterno(current->getLeft()) + "nodo"+ to_string(current->getId())+":C0->nodo"+ to_string(current->getLeft()->getId()) + "\n";
+
+	}
+	if(current->getRight()!=NULL){
+		contenido+= contenidoInterno(current->getRight()) + "nodo"+ to_string(current->getId())+":C1->nodo"+ to_string(current->getRight()->getId()) + "\n";
+
+	}
+	
+	return contenido;
+}
 };
 /*
 int main(){
+
+	int correlativo = 1;
 	ABB *tree = new ABB();
-	tree->add(new Node("Mario1"));
-	tree->add(new Node("Pikachu"));
-	tree->add(new Node("Boo"));
-	tree->add(new Node("Geoff"));
-	tree->add(new Node("Mario2"));
-	tree->add(new Node("Mushroom"));
+	tree->add(new Node("Mario1", correlativo));
+	correlativo++;
+	tree->add(new Node("Pikachu", correlativo));
+	correlativo++;
+	tree->add(new Node("Boo",correlativo));
+	correlativo++;
+	tree->add(new Node("Geoff",correlativo));
+	correlativo++;
+	tree->add(new Node("Mario2",correlativo));
+	correlativo++;
+	tree->add(new Node("Mushroom",correlativo));
 
 	
 	
-	tree->postorder();//de menor a mayor, ordenados 
+	//tree->inorder();//de menor a mayor, ordenados 
 	cout<<"\n";
 	//tree->preorder();
 	cout<<"\n";
-	tree->graphPostorder();
+	//tree->graphPostorder();
 	//tree->postorder();
 	
 	cout<<"\n";
-	//tree->graph();
+	tree->graph();
 
 
 }*/

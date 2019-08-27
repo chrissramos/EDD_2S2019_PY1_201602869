@@ -1,11 +1,36 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <sstream>
+#include <string>
+#include <vector>
 #include"ABB/mainABB.cpp"
 using namespace std;
 ABB *tree = new ABB();
+int correlativo = 1;
+void archivoInicial(string nombre){
+	vector<string> data;
+    string contenido;
+    ifstream archivo;
+    int contador = 0;
+	string line;
+	string abrir = nombre+"/"+nombre+".csv";
+	archivo.open(abrir);
+	while (archivo.good())
+	{	
+		getline(archivo,line,archivo.widen(','));
+		//cout<<line<<endl;
+		data.push_back(line);
+		 
+	}
+	for(int i = 1; i<data.size();i++){
+		string datos = data[i];
+		cout<<"dato en arreglo: "<<datos<<"|"<<endl;
+	}
 
+	system("cmd /c pause");
 
+}
 void menuABB(){
 	bool bandera=false;
     char tecla;
@@ -121,6 +146,7 @@ void menuReports(){
     }while(bandera!=true);
 }
 void menuPrincipal(){
+	
 	bool bandera=false;
     char tecla;
 	string nombreImagen="";
@@ -145,7 +171,9 @@ void menuPrincipal(){
 				//system("cmd /c cls"); 
 				cout << "Ingrese el nombre de la imagen:\n";
 				cin>>nombreImagen;
-				tree->add(new Node(nombreImagen));
+				//archivoInicial(nombreImagen);
+				tree->add(new Node(nombreImagen, correlativo));
+				correlativo++;
 				system("cmd /c pause");
 				}
 				break;
