@@ -222,6 +222,11 @@ void menuReports(){
 		}
     }while(bandera!=true);
 }
+void selectImage(){
+	//system("cmd /c cls"); 
+	tree->selectImageIn();
+	system("cmd /c pause"); 
+}
 void menuPrincipal(){
 	
 	bool bandera=false;
@@ -248,7 +253,7 @@ void menuPrincipal(){
 				//system("cmd /c cls"); 
 				cout << "Ingrese el nombre de la imagen:\n";
 				cin>>nombreImagen;
-				archivoInicial(nombreImagen);
+				//archivoInicial(nombreImagen);
 				//armarCss(nombreImagen);
 				tree->add(new Node(nombreImagen, correlativo));
 				correlativo++;
@@ -259,6 +264,8 @@ void menuPrincipal(){
 			case '2':
 				system("cmd /c cls"); 
 				cout << "select.\n";
+				//selectImage();
+				tree->selectImageIn();
 				system("cmd /c pause");
 				break;
  

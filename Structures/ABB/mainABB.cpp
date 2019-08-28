@@ -60,7 +60,10 @@ public:
 	vector<string> arrInorder;
 	vector<string> arrPreorder;
 	vector<string> arrPostorder;
-	
+	int contadorIn = 1;
+	bool inorderFlag;
+	bool postorderFlag;
+	bool preorderFlag;
 	ABB(){
 		root = NULL;
 	}	
@@ -94,7 +97,11 @@ void recursive_add(Node *current, Node *temp){
 
 
 void preorder(){ // raiz izq der
-	recursive_preorder(root);
+	if(preorderFlag == false){
+		recursive_preorder(root);
+		preorderFlag = true;
+	}
+	
 }
 void recursive_preorder(Node* current){
 	//imprimr el valor de la raiz
@@ -114,7 +121,11 @@ void recursive_preorder(Node* current){
 
 }
 void postorder(){ // izq derecha raiz
-	recursive_postorder(root);
+	if(postorderFlag == false){
+		recursive_postorder(root);
+		postorderFlag = true;
+	}
+	
 }
 void recursive_postorder(Node* current){
 	//llamar recursivamente al sub arbol izq
@@ -134,7 +145,13 @@ void recursive_postorder(Node* current){
 	arrPostorder.push_back(current->getKey());
 }
 void inorder(){
-	recursive_inorder(root);
+	if(inorderFlag == false){
+		recursive_inorder(root);
+		inorderFlag = true;
+	}
+	
+	//cout<<" se insertaron datos inorder:"<<arrInorder.size()<<endl;
+	//system("cmd /c pause");
 }
 void recursive_inorder(Node* current){//izq raiz der 
 
@@ -144,14 +161,39 @@ void recursive_inorder(Node* current){//izq raiz der
 		recursive_inorder(current->getLeft());
 	}
 	//imprimr el valor de la raiz
-	cout <<current->getId()<<current->getKey();
+	//cout <<current->getId()<<current->getKey();
+	//cout<<current->getKey();
+	contadorIn++;
 	arrInorder.push_back(current->getKey());
-	cout <<"->";
+	//cout <<"\n";
 	//llamar recursivamente al sub arbol der 
 	if (current->getRight() != NULL)
 	{
 		recursive_inorder(current->getRight());
 	}
+}
+
+void selectImageIn(){
+	contadorIn = 1;
+	//system("cmd /c pause");
+	cout<<"------------imageness"<<endl;
+	if(inorderFlag == false){
+		//cout<<"inorder vacio"<<endl;
+		recursive_inorder(root);
+		for(int i = 0;i<arrInorder.size();i++){
+			string dato = arrInorder[i];
+			cout<<i<<" - "<<dato<<endl;
+		}
+		inorderFlag = true;
+	}else{
+		for(int i = 0;i<arrInorder.size();i++){
+			string dato = arrInorder[i];
+			cout<<i<<" - "<<dato<<endl;
+		}
+	}
+	
+	
+	//system("cmd /c pause");
 }
 
 void graphInorder(){
