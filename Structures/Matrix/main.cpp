@@ -361,8 +361,9 @@ string graphXNodes(){
   //cout<<contenidoTodo;
   return contenidoTodo;
 }
-void graphMatrix(){
+void graphMatrix(string padre, string numCapa){
   string contenidoDot = "digraph G { \n node [shape=record];\n";  
+  //string titulo = padre+"Capa"+numCapa+".dot";
   string titulo = "demo2.dot";
   string ranksame="{rank = same " + head->contador +" ";
   string encabezados = "";
@@ -435,10 +436,10 @@ void graphMatrix(){
    fs.close();
    system("cmd /c dot -Tpng demo2.dot -o demo_dot.png");
    system("cmd /c demo_dot.png");
-
+  //padre+"Capa"+numCapa+".dot";
    //cout<<"ENLACES Y"<<"\n"<<enlacesY<<"\n";
   //cout<<"enlaces X:\n"<<enlacesX<<"\n\n"<<enlacesY;
-  cout<<contenidoDot;
+  //cout<<contenidoDot;
 }
 void findNode(int x, int y){
   node *temp = head->right;
@@ -466,9 +467,9 @@ void findNode(int x, int y){
     cout<<"no se encontro coordenada";
   }
 }
-};
+};/*
 int main() {
-  /* code */
+  
   matrix *matriz = new matrix;
   matriz->add(15,10,1,1,1);
   matriz->add(3,6,2,2,2);
@@ -483,13 +484,13 @@ int main() {
   
   
   matriz->add(15,1,10,10,10);
- matriz->findNode(15,1);
+ //matriz->findNode(15,1);
   
 
  // matriz->graphXNodes();
   //matriz->printHeaders();
   cout<<"\n";
-  //matriz->graphMatrix();
+  matriz->graphMatrix();
   //matriz->printNodesX();
   //matriz->printNodesY();
 
@@ -503,4 +504,4 @@ int main() {
  // sm->graphXNodes();
  // sm->graphMatrix();
  return 0;
-}
+}*/

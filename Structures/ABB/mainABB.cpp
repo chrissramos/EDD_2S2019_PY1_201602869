@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-
+#include"../LinkedList/mainList.cpp"
 using namespace std;
 
 
@@ -11,21 +11,46 @@ private:
 	string key;
 	Node *left;
 	Node *right;
+	linked *lista;
+	int imageH;
+	int imageW;
+	int pixelH;
+	int pixelW;
 	int id;
+	//hacer mas atributos de lo del archivo config width height
 public:
 	
-	Node(string key, int id){
+	Node(string key, int id, linked* lista, int imageH, int imageW, int pixelH, int pixelW){
 		this->key = key;
 		right = NULL;
 		left = NULL;
 		this->id=id;
+		this->lista = lista;
+		this->imageH = imageH;
+		this->imageW = imageW;
+		this->pixelH = pixelH;
+		this->pixelW = pixelW;
 	}
-
+	linked* getLista(){
+		return this->lista;
+	}
 	string getKey(){
 		return this->key;
 	}
 	int getId(){
 		return this->id;
+	}
+	int getImageH(){
+		return this->imageH;
+	}
+	int getImageW(){
+		return this->imageW;
+	}
+	int getPixelH(){
+		return this->pixelH;
+	}
+	int getPixelW(){
+		return this->pixelW;
 	}
 
 	Node* getLeft(){
@@ -50,6 +75,9 @@ public:
 	void setRight(Node *right){
 		this->right = right;
 	}
+	void setLista(linked *lista){
+		this->lista = lista;
+	}
 };
 
 
@@ -60,6 +88,7 @@ public:
 	vector<string> arrInorder;
 	vector<string> arrPreorder;
 	vector<string> arrPostorder;
+	vector<Node*> arrNodes;
 	int contadorIn = 1;
 	bool inorderFlag;
 	bool postorderFlag;
@@ -165,6 +194,7 @@ void recursive_inorder(Node* current){//izq raiz der
 	//cout<<current->getKey();
 	contadorIn++;
 	arrInorder.push_back(current->getKey());
+	arrNodes.push_back(current);
 	//cout <<"\n";
 	//llamar recursivamente al sub arbol der 
 	if (current->getRight() != NULL)
@@ -180,22 +210,182 @@ void selectImageIn(){
 	if(inorderFlag == false){
 		//cout<<"inorder vacio"<<endl;
 		recursive_inorder(root);
-		for(int i = 0;i<arrInorder.size();i++){
+		//recorrer arrrNodes
+		/*for(int i = 0;i<arrInorder.size();i++){
 			string dato = arrInorder[i];
 			cout<<i<<" - "<<dato<<endl;
+		}*/
+		for(int j = 0;j<arrNodes.size();j++){
+			Node *current = arrNodes[j];
+			cout<<j+1<<" - "<<current->getKey()<<endl;
+			
 		}
+		
 		inorderFlag = true;
 	}else{
-		for(int i = 0;i<arrInorder.size();i++){
+		/*for(int i = 0;i<arrInorder.size();i++){
 			string dato = arrInorder[i];
 			cout<<i<<" - "<<dato<<endl;
+		}*/
+		for(int j = 0;j<arrNodes.size();j++){
+			Node *current = arrNodes[j];
+			cout<<j+1<<" - "<<current->getKey()<<endl;
 		}
 	}
 	
-	
-	//system("cmd /c pause");
 }
+Node* returnImagenSel(int numImagen){
+	//linked *lista;
+	for(int i = 0;i<arrNodes.size();i++){
+		Node *current = arrNodes[i];
+		if(current->getId() == numImagen){
+			
+			return current;
+		}
+	}
+}
+void mostarCapasImagen(int numImagen){
+	for (int i = 0; i < arrNodes.size(); i++)
+	{
+		Node *current = arrNodes[i];
+		if(current->getId() == numImagen){
+			int numCapaG;
+			linked *lista = current->getLista();
+			
+			cout<<"Desea graficar 1 capa o toda la imagen?"<<endl;
+			cout<<"1....Una capa. \n 2....Toda la imagen."<<endl;
+			cout<<"Opcion: ";
+			int opcionCapaToda;
+			cin>>opcionCapaToda;
+			if(opcionCapaToda == 1){
+				cout<<"Esta imagen tiene: "<<lista->size()<<" capas"<<endl;
+				cout<<"Ingrese el numero de capa que desea graficar: ";
+				cin>>numCapaG;
+				//verificar si se paso del numero de capas				
+				nodeList *nodoLista= lista->getNodo(numCapaG);
+				matrix *matriz = nodoLista->getMatrix();
+				cout<<"Se obtubo: "<<nodoLista->getKey()<<endl;
+				matriz->graphMatrix(" ", " ");
+			}else if(opcionCapaToda == 2){
+				//aqui juntar las capas en 1 sola y graficar
+				matrix *matrizCompleta = new matrix();
+				for(int t=0;t<lista->size();t++){
+					nodeList *nodoCapa = lista->getNodo(t+1);
+					matrix *matrizCapa = nodoCapa->getMatrix();
+					llenarMatrizC(matrizCompleta, matrizCapa);
+					
+				}
+				matrizCompleta->graphMatrix(" "," ");
+				// no se donde guardar matriz completa
+				system("cmd /c pause");
+			}else{
+				cout<<"opcion invalida";
+			}
 
+		}
+	}
+	
+}
+void llenarMatrizC(matrix* matrizCompleta, matrix* matrizhijo){
+	node *temp = matrizhijo->head->right;
+	cout<<"primero: "<<temp->down->x<<","<<temp->down->y<<endl;
+	while (temp->right!=NULL){
+		node *aux = temp->down;
+		if(aux->down == NULL){
+			//insertar aqui
+			matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+			//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+		}
+		while (aux->down!=NULL)
+		{
+			//insertar aqui
+			matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+			//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			aux = aux->down;
+			if (aux->down == NULL)
+			{
+				//insertar aqui
+				matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			}
+			
+		}		
+		temp = temp->right;
+		if (temp->right == NULL)
+		{
+			node *aux2 = temp->down;
+			while (aux2->down!=NULL)
+			{
+				//insertar aqui
+				matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+				//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+				aux2 = aux2->down;
+				if (aux2->down == NULL)
+				{
+					//insertar aqui
+					matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+					//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+				}
+			}
+			
+		}
+	}
+	cout<<"\n Termino UNA MATRIZ"<<endl;
+
+}
+int contarNodos(matrix* matrizCompleta){
+	int contador = 0;
+	node *temp = matrizCompleta->head->right;
+		while (temp->right!=NULL){
+			node *aux = temp->down;
+			if(aux->down == NULL){
+				//insertar aqui
+				contador++;
+				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			}
+			while (aux->down!=NULL)
+			{
+				//insertar aqui
+				contador++;
+				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				aux = aux->down;
+				if (aux->down == NULL)
+				{
+					//insertar aqui
+					contador++;
+					//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+					//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				}
+				
+			}		
+			temp = temp->right;
+			if (temp->right == NULL)
+			{
+				node *aux2 = temp->down;
+				while (aux2->down!=NULL)
+				{
+					//insertar aqui
+					contador++;
+					//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+					//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+					aux2 = aux2->down;
+					if (aux2->down == NULL)
+					{
+						//insertar aqui
+						contador++;
+						//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+						//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+					}
+				}
+				
+			}
+	}
+
+	//cout<<"Cantidad de nodos: "<<contador<<endl;
+	return contador;
+}
 void graphInorder(){
 	string titulo = "ABBInorder.dot";
 	string contenido = "digraph G { \n rankdir=LR;\n node [shape = record, style=filled, fillcolor=seashell2];\n";
@@ -286,10 +476,10 @@ string contenidoInterno(Node* current){
 	string contenido ="";
 	
 	if(current->getLeft()==NULL && current->getRight() == NULL){
-		contenido = "nodo"+ to_string(current->getId())+ "[ label= \"" + current->getKey() + "\"];\n";
+		contenido = "nodo"+ to_string(current->getId())+ "[ label= \"" + to_string(current->getId()) + current->getKey() + "\"];\n";
 
 	}else{
-		contenido = "nodo"+ to_string(current->getId())+ "[ label= \" <C0>|" + current->getKey() + "|<C1> \"];\n";
+		contenido = "nodo"+ to_string(current->getId())+ "[ label= \" <C0>|" + to_string(current->getId())+ current->getKey() + "|<C1> \"];\n";
 	}
 	if(current->getLeft()!=NULL){
 		contenido+= contenidoInterno(current->getLeft()) + "nodo"+ to_string(current->getId())+":C0->nodo"+ to_string(current->getLeft()->getId()) + "\n";
@@ -302,6 +492,8 @@ string contenidoInterno(Node* current){
 	
 	return contenido;
 }
+
+
 };
 /*
 int main(){
