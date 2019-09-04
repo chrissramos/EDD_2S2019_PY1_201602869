@@ -217,6 +217,8 @@ void archivoInicial(string nombre, linked *lista){
 		entrarCapa(capa,nombre, ma, lista);
 		//ma->graphMatrix(nombre, capa);
 	}
+
+	
 	/*string capa = data[2];
 	size_t tam = capa.length();
 	capa.erase(tam-1);
@@ -357,26 +359,72 @@ void selectImage(){
 	tree->selectImageIn();
 	system("cmd /c pause"); 
 }
+string decToHexa(int n){    
+    string color;
+    // char array to store hexadecimal number 
+    char hexaDeciNum[100]; 
+      
+    // counter for hexadecimal number array 
+    int i = 0; 
+    while(n!=0) 
+    {    
+        // temporary variable to store remainder 
+        int temp  = 0; 
+          
+        // storing remainder in temp variable. 
+        temp = n % 16; 
+          
+        // check if temp < 10 
+        if(temp < 10) 
+        { 
+            hexaDeciNum[i] = temp + 48; 
+            i++; 
+        } 
+        else
+        { 
+            hexaDeciNum[i] = temp + 55; 
+            i++; 
+        } 
+          
+        n = n/16; 
+    } 
+      
+    // printing hexadecimal number array in reverse order 
+    for(int j=i-1; j>=0; j--){ 
+        //cout << hexaDeciNum[j];
+        color.push_back(hexaDeciNum[j]);
+        
+    }
+    return color;
+
+} 
 string llenarCss(matrix* matriz){
 	string contenido =" ";
+
 	vector<string> prueba;
 	node *temp = matriz->head;
+	int contador = 1;
 	while(temp->down!=NULL){
 		node *aux = temp->down->right;
 		while (aux->right!=NULL){
-			cout<<"estamos en x,y: "<<aux->x<<","<<aux->y<<endl;
-			
+			//cout<<"estamos en x,y: "<<aux->x<<","<<aux->y<<"	"<<contador<<endl;
+			contenido+= ".pixel:nth-child("+ to_string(((aux->y -1)*imagenSelNode->getImageW())+ aux->x) + "){ background: #" + decToHexa(aux->r) +decToHexa(aux->g)+decToHexa(aux->b) + "}\n";
+			contador++;
 			aux = aux->right;
 			if(aux->right==NULL){
-				cout<<"estamos en x,y: "<<aux->x<<","<<aux->y<<endl;
+				//cout<<"estamos en x,y: "<<aux->x<<","<<aux->y<<"	"<<contador<<endl;
+				contenido+= ".pixel:nth-child("+ to_string(((aux->y -1)*imagenSelNode->getImageW())+ aux->x) + "){ background: #" + decToHexa(aux->r) +decToHexa(aux->g)+decToHexa(aux->b) +"}\n";
+				contador++;
 			}
 		}
 		
 		temp = temp->down;
 	}
+	return contenido;
 }
 void armarCss(string padre){
 	//system("cmd /c cls");
+	string contenidoChild;
 	linked *lista = imagenSelNode->getLista();
 	matrix *matrizCompleta = new matrix();
 	for(int i = 0; i< lista->size();i++){
@@ -384,10 +432,10 @@ void armarCss(string padre){
 		//system("cmd /c pause"); 
 		nodeList *nodoLista = lista->getNodo(i+1);
 		matrix *matrizcapa = nodoLista->getMatrix();
-		
-		tree->llenarMatrizC(matrizCompleta,matrizcapa);
+		contenidoChild += llenarCss(matrizcapa);
+		//tree->llenarMatrizC(matrizCompleta,matrizcapa);
 	}
-	string contenidoChild = llenarCss(matrizCompleta);
+	//string contenidoChild = llenarCss(matrizCompleta);
 	system("cmd /c pause"); 
 	int cantidadN;
 	int canvasW = imagenSelNode->getImageW() * imagenSelNode->getPixelW();
@@ -402,35 +450,35 @@ void armarCss(string padre){
 	css << "box-shadow: 0px 0px 1px #fff;";
 	css << "}\n";
 	//css << llamar a metodo de los child
-	
+	css<< contenidoChild;
 	css.close();
 
 	//system("cmd /c pause");
 }
 void exportHtml(){
-	int cantidadN;
+	int cantidadN =0;
 	ofstream html;
 	string nombre = imagenSelNode->getKey();
+	int cantDivs = imagenSelNode->getImageW() * imagenSelNode->getImageH();
 	html.open("Exports/"+nombre+".html");
 	html << "<!DOCTYPE html><html> \n <head> <link rel=\"stylesheet\" href=\"" + nombre +".css \" >\n" ;
 	html << "</head> \n <body> \n <div class=\" canvas \"> \n";
 	
 	//obtener cantidad de pixeles, generar matrix completa recorriendo caps
-	linked *lista = imagenSelNode->getLista();
+	
+	/*linked *lista = imagenSelNode->getLista();
 	matrix *matrizCompleta = new matrix();
-	//cout<<"tamanio lista:"<<lista->size()<<endl;
-	//system("cmd /c pause"); 
+	
 	for(int i = 0; i< lista->size();i++){
-		//cout<<"entro  a for indiceL "<<i<<endl;
-		//system("cmd /c pause"); 
+		
 		nodeList *nodoLista = lista->getNodo(i+1);
 		matrix *matrizcapa = nodoLista->getMatrix();
 		
 		tree->llenarMatrizC(matrizCompleta,matrizcapa);
 	}
-	//matrizCompleta->graphMatrix("","");
-	cantidadN = tree->contarNodos(matrizCompleta);
-	for(int j = 0;j<cantidadN+1;j++){
+*/
+	
+	for(int j = 0;j<cantDivs;j++){
 		html << "<div class = \"pixel\"></div> \n";
 		
 	}
@@ -477,6 +525,7 @@ void menuPrincipal(){
 					cout<<pixelheight<<endl;*/
 				//system("cmd /c pause");
 				tree->add(new Node(nombreImagen, correlativo,list,imageheight,imagewidht,pixelheight,pixelwidht));
+
 				correlativo++;
 				cout<<"Tamanio lista:"<<list->size()<<endl;
 				//limpiar aqui variables, se pueden enviar y limpiar aqui mismo
