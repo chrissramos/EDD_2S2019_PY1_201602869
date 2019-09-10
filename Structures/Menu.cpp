@@ -181,6 +181,7 @@ void entrarCapa(string capa, string padre, matrix *m, linked* lista){
 	//consola+= padre + "Reports";
 	//system(consola.c_str());
 	//m->graphMatrix(padre, numCapa2);
+	//
 }
 void archivoInicial(string nombre, linked *lista){
 	vector<string> data;
@@ -326,7 +327,12 @@ void menuReports(){
  
 			case '3':
 				system("cmd /c cls"); 
-				cout << "filtros.\n";
+				cout << "LINEAR MATRIX REPORT.\n";
+				tree->selectImageIn();
+				cout<<"Ingrese el numero de imagen: ";
+				int numimagen2;
+				cin>>numimagen2;
+				tree->capasLinear(numimagen2);
 				system("cmd /c pause");
 				break;
  

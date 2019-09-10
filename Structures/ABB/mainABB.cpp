@@ -252,7 +252,7 @@ void mostarCapasImagen(int numImagen){
 			int numCapaG;
 			linked *lista = current->getLista();
 			
-			cout<<"Desea graficar 1 capa o toda la imagen?"<<endl;
+			cout<<"Desea graficar 1 capa o todas las capas?"<<endl;
 			cout<<"1....Una capa. \n 2....Toda la imagen."<<endl;
 			cout<<"Opcion: ";
 			int opcionCapaToda;
@@ -272,19 +272,88 @@ void mostarCapasImagen(int numImagen){
 				for(int t=0;t<lista->size();t++){
 					nodeList *nodoCapa = lista->getNodo(t+1);
 					matrix *matrizCapa = nodoCapa->getMatrix();
-					llenarMatrizC(matrizCompleta, matrizCapa);
-					
+					matrizCapa->graphMatrix("","");
+					//llenarMatrizC(matrizCompleta, matrizCapa);
 				}
-				matrizCompleta->graphMatrix(" "," ");
+				//matrizCompleta->graphMatrix(" "," ");
 				// no se donde guardar matriz completa
-				system("cmd /c pause");
+				//system("cmd /c pause");
 			}else{
 				cout<<"opcion invalida";
 			}
-
 		}
 	}
-	
+}
+void capasLinear(int numImagen){
+	linked *lista = new linked();
+	for(int i = 0 ; i<arrNodes.size();i++){
+		Node *current = arrNodes[i];
+		if(current->getId() == numImagen){
+			int numCapaG;
+			linked *lista = current->getLista();
+			cout<<"this image has: "<<lista->size()<<" layers, being 1 the first layer."<<endl;
+			cout<<"Enter the layer number you want to graph: ";
+			cin>>numCapaG;
+			nodeList *nodoLista= lista->getNodo(numCapaG);
+			matrix *matriz = nodoLista->getMatrix();
+			cout<<"-------------------------------------------------";
+			cout<<"1 - Rows \n 2 - Columns";
+			cout<<"\n";
+			cout<<"Enter the option number"<<endl;
+			int opcion;
+			cin>>opcion;
+			if(opcion == 1){
+				// filas
+				linealFilas(matriz);
+			}else if(opcion == 2){
+				//columns
+			}else
+			{
+				cout<<"Invalid Option.";
+			}
+			
+			
+			
+		}
+	}
+}
+void linealFilas(matrix* matriz){
+	string titulo = "ABBInorder.dot";
+	string contenido = "digraph G { \n rankdir=LR;\n node [shape = record, style=filled, fillcolor=seashell2];\n";
+	string indice;
+	node *temp = matriz->head;
+	int contador =1;
+	while(temp->down!=NULL){
+		node *aux = temp->down->right;
+		while(aux->right!=NULL){
+			contenido+="("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+aux->color; 
+			contenido+="->";
+			aux = aux->right;
+			if(aux->right == NULL){
+				contenido+="("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+aux->color; 
+			}
+		}
+		temp = temp->down;
+	}
+
+
+	/*for(auto x =0 ; x< arrInorder.size()-1;x++){
+		string dato = arrInorder[x];
+		contenido+= dato + "->";
+	}
+	string dato2 = arrInorder[arrInorder.size()-1];
+	contenido+=dato2;*/
+	contenido+="}";
+	ofstream fs(titulo.c_str());
+    fs << contenido << endl;
+    fs.close();
+	system("cmd /c dot -Tpng ABBInorder.dot -o ABBInorder.png");
+       // system("cmd /c ls");
+    system("cmd /c ABBInorder.png");
+
+}
+void linealColumnas(){
+
 }
 void llenarMatrizC(matrix* matrizCompleta, matrix* matrizhijo){
 	node *temp = matrizhijo->head->right;
