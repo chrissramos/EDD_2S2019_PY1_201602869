@@ -441,6 +441,36 @@ void graphMatrix(string padre, string numCapa){
   //cout<<"enlaces X:\n"<<enlacesX<<"\n\n"<<enlacesY;
   //cout<<contenidoDot;
 }
+void modificarNodo(int x, int y, int r, int g, int b){
+    node *temp = head->right;
+  while(temp->x!=x && temp->right!=NULL){
+    temp = temp->right;
+  }
+  if(temp->x == x){
+    //cout<<"encontro coordenada X y es:"<<temp->x<<"\n";
+    while(temp->y!=y && temp->down!=NULL){
+      temp = temp->down;
+    }
+    if(temp->y == y){
+     // cout<<"encontro coordenada Y y es: "<<temp->y<<"\n";
+    }
+    cout<<"coordenadas encontradas: "<<temp->x<<","<<temp->y<<" y su contenido es: "<<temp->color<<"\n";
+    temp->r = r;
+    temp->g = g;
+    temp->b = b;
+    temp->color = "\"" + to_string(r) + "," + to_string(g) + "," + to_string(b) + "\"";
+   // cout<<"Nodo arriba: "<<temp->up->color<<"\n";
+    /*if(temp->down!=NULL){
+      cout<<"Nodo abajo: "<<temp->down->color<<"\n";
+    }else if(temp->right!=NULL){
+      cout<<"Nodo derecha: "<<temp->right->color<<"\n";
+    }else if(temp->left!=NULL){
+      cout<<"Nodo izquierda: "<<temp->left->color<<"\n";
+    }*/
+  }else{
+    cout<<"no se encontro coordenada";
+  }
+}
 void findNode(int x, int y){
   node *temp = head->right;
   while(temp->x!=x && temp->right!=NULL){

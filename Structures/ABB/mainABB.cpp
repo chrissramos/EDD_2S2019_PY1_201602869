@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include"../LinkedList/mainList.cpp"
+//#include"../Circular/circularMain.cpp"
+
 using namespace std;
 
 
@@ -307,6 +309,7 @@ void capasLinear(int numImagen){
 				linealFilas(matriz);
 			}else if(opcion == 2){
 				//columns
+				linealColumnas(matriz);
 			}else
 			{
 				cout<<"Invalid Option.";
@@ -322,15 +325,21 @@ void linealFilas(matrix* matriz){
 	string contenido = "digraph G { \n rankdir=LR;\n node [shape = record, style=filled, fillcolor=seashell2];\n";
 	string indice;
 	node *temp = matriz->head;
-	int contador =1;
+	int contador2 =1;
 	while(temp->down!=NULL){
 		node *aux = temp->down->right;
 		while(aux->right!=NULL){
-			contenido+="("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+aux->color; 
-			contenido+="->";
+			contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+ to_string(aux->r)  + "-"+ to_string(aux->g) + "-" + to_string(aux->b) + " \"] \n"; 
+			contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+			cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<" 	numero:"<<contador2<<endl;
+			contador2++;
 			aux = aux->right;
 			if(aux->right == NULL){
-				contenido+="("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+aux->color; 
+				cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<" 	numero:"<<contador2<<endl;
+				
+				contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+ to_string(aux->r)  + "-"+ to_string(aux->g) + "-" + to_string(aux->b) + " \"] \n";   
+				contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+				contador2++;
 			}
 		}
 		temp = temp->down;
@@ -352,8 +361,65 @@ void linealFilas(matrix* matriz){
     system("cmd /c ABBInorder.png");
 
 }
-void linealColumnas(){
+void linealColumnas(matrix* matriz){
+	string titulo = "ABBInorder.dot";
+	string contenido = "digraph G { \n rankdir=LR;\n node [shape = record, style=filled, fillcolor=seashell2];\n";
+	string indice;
+	node *temp = matriz->head;
+	int contador2 =1;
+	while(temp->right!=NULL){
+		node *aux = temp->right->down;
+		while(aux->down!=NULL){
+			contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+ to_string(aux->r)  + "-"+ to_string(aux->g) + "-" + to_string(aux->b) + " \"] \n"; 
+			contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+			cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<" 	numero:"<<contador2<<endl;
+			contador2++;
+			aux = aux->down;
+			if(aux->down == NULL){
+				cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<" 	numero:"<<contador2<<endl;
+				
+				contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(aux->x) + ","+ to_string(aux->y)+")"+ to_string(aux->r)  + "-"+ to_string(aux->g) + "-" + to_string(aux->b) + " \"] \n";   
+				contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+				contador2++;
+			}
+		}
+		
+		temp = temp->right;
+		if(temp->right == NULL){
+			temp = temp->down;
+			if(temp->down == NULL){
+				cout<<"Estamos en: X:"<<temp->x<<","<<temp->y<<" 	numero:"<<contador2<<endl;
+				contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(temp->x) + ","+ to_string(temp->y)+")"+ to_string(temp->r)  + "-"+ to_string(temp->g) + "-" + to_string(temp->b) + " \"] \n";   
+				contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+				contador2++;
+			}else{
+				while(temp->down!=NULL){
+				cout<<"Estamos en: X:"<<temp->x<<","<<temp->y<<" 	numero:"<<contador2<<endl;
+				contenido+= to_string(contador2)+"[label = \"" + "("+ to_string(temp->x) + ","+ to_string(temp->y)+")"+ to_string(temp->r)  + "-"+ to_string(temp->g) + "-" + to_string(temp->b) + " \"] \n";   
+				contenido+=to_string(contador2)+ "->" + to_string(contador2+1) + "\n";
+				contador2++;
+				temp=temp->down;
+				}
+			}
+			
 
+		}
+	}
+
+
+	/*for(auto x =0 ; x< arrInorder.size()-1;x++){
+		string dato = arrInorder[x];
+		contenido+= dato + "->";
+	}
+	string dato2 = arrInorder[arrInorder.size()-1];
+	contenido+=dato2;*/
+	contenido+="}";
+	ofstream fs(titulo.c_str());
+    fs << contenido << endl;
+    fs.close();
+	system("cmd /c dot -Tpng ABBInorder.dot -o ABBInorder.png");
+       // system("cmd /c ls");
+    system("cmd /c ABBInorder.png");
 }
 void llenarMatrizC(matrix* matrizCompleta, matrix* matrizhijo){
 	node *temp = matrizhijo->head->right;
