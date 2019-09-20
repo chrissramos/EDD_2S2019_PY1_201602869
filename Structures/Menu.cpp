@@ -606,7 +606,37 @@ matrix* negativoDos(matrix* matrizH){
 	}
 	return matrizH;
 }
-
+matrix* escalaGrisDos(matrix* matrizH){
+	node *temp = matrizH->head;
+	//cout<<"primero: "<<temp->x<<","<<temp->y<<endl;
+	while(temp!=NULL){
+		node *aux = temp->right;
+		while(aux!=NULL){
+			int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+			aux->r = suma;
+			aux->g =suma;
+			aux->b =suma;
+			//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<endl;
+			aux = aux->right;
+			/*if(aux->right == NULL){
+				cout<<"RIGHT Estamos en: X:"<<aux->x<<","<<aux->y<<endl;
+				aux->r =255- aux->r;
+				aux->g =255- aux->g;
+				aux->b =255- aux->b;
+			}*/
+		}
+		//cout<<"Salto de linea"<<" valores de temp: "<<temp->x<<","<<temp->y<<endl;
+		temp = temp->down;	
+		/*if(temp->down == NULL){
+				cout<<"RIGHTD Estamos en: X:"<<temp->x<<","<<temp->y<<endl;
+				//aux->r =255- aux->r;
+				//aux->g =255- aux->g;
+				//aux->b =255- aux->b;
+		}*/
+		
+	}
+	return matrizH;
+}
 matrix* negativo(matrix* matrizH){
 	
 	node *temp = matrizH->head->right;
@@ -906,7 +936,7 @@ void menuPrincipal(){
 								nodeList *nodoCapa = listaCopiaNueva->getNodo(i+1);
 								int key = nodoCapa->getKey();
 								matrix *matrizH = nodoCapa->getMatrix();
-								matrizH = escalaGris(matrizH);
+								matrizH = escalaGrisDos(matrizH);
 								nodeList *nodoNuevo = new nodeList(key, matrizH);
 								listaNuevaF->add(nodoNuevo);
 								//llenarMatrizC(matrizC, matrizH);
@@ -1057,6 +1087,7 @@ void menuPrincipal(){
 					if(opcion == 1){
 						exportHtml();
 					}else if(opcion ==2){
+						//mostrar filtros
 						nodeCircular *circular = listaCircular->getHead();
 						exportFiltro(circular->getLista());
 					}else{
