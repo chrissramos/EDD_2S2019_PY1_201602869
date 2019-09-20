@@ -20,7 +20,7 @@ class nodeCircular{
     string getFiltro(){
         return this->filtro;
     }
-    linked* getMatrix(){
+    linked* getLista(){
         return this->lista;
     }
     nodeCircular* getSiguiente(){
@@ -32,7 +32,7 @@ class nodeCircular{
     void setFiltro(string filtro){
         this->filtro = filtro;
     }
-    void setMatrix(linked *lista){
+    void setLista(linked *lista){
         this->lista = lista;
     }
     void setSiguiente(nodeCircular *siguiente){
@@ -71,7 +71,7 @@ class linkedCircular{
         return this->head;
     }
     void graph(){
-        string titulo = "ABBInorder.dot";
+        string titulo = "Circular.dot";
         string enlaces = "";
         string ranks = "{rank = same ";
         string contenido = "digraph G {\n node [shape = record, style=filled, fillcolor=seashell2];\n";
@@ -97,14 +97,43 @@ class linkedCircular{
         contenido+="\n}";
         cout<<contenido;
 
-       /* ofstream fs(titulo.c_str());
+        ofstream fs(titulo.c_str());
         fs << contenido << endl;
         fs.close();
-        system("cmd /c dot -Tpng ABBInorder.dot -o ABBInorder.png");
+        system("cmd /c dot -Tpng Circular.dot -o Circular.png");
         // system("cmd /c ls");
-        system("cmd /c ABBInorder.png");*/
+        system("cmd /c Circular.png");
     }
-    
+    string mostarFiltros(){
+        string filtros ="";
+        if(head!=NULL){
+            nodeCircular *temp = head;
+            while(temp->getSiguiente()!=head){
+
+            }
+
+        }
+        return filtros;
+    }
+    nodeCircular* getNodo(int pos){
+        if(pos == 1){
+            return head;
+        }else{
+            int contador = 1;
+            nodeCircular *temp = head;
+            while(temp->getSiguiente()!=head){
+                if(contador == pos){
+                    return temp;
+                }else{
+                    contador++;
+                    temp = temp->getSiguiente();
+                }
+                if(temp->getSiguiente()==head &&contador == pos){
+                    return temp;
+                }
+            }
+        }
+    }
 };/*
 int main(){
     linkedCircular *lista = new linkedCircular();

@@ -265,9 +265,26 @@ void mostarCapasImagen(int numImagen){
 				cin>>numCapaG;
 				//verificar si se paso del numero de capas				
 				nodeList *nodoLista= lista->getNodo(numCapaG);
+				
 				matrix *matriz = nodoLista->getMatrix();
 				cout<<"Se obtubo: "<<nodoLista->getKey()<<endl;
-				matriz->graphMatrix(" ", " ");
+				if(matriz->head == NULL){
+					cout<<"matriz vacia"<<endl;
+				}else
+				{
+					cout<<"dato matriz: "<<matriz->head->color<<endl;
+					if(matriz->head->right == NULL){
+						cout<<"no tiene derecha"<<endl;
+					}else
+					{
+						cout<<"dato derecha"<<matriz->head->right<<endl;
+					}
+					
+				}
+				
+				//cout<<"dato: "<<matriz->head->right->down->color<<endl;
+
+				//matriz->graphMatrix(" ", " ");
 			}else if(opcionCapaToda == 2){
 				//aqui juntar las capas en 1 sola y graficar
 				matrix *matrizCompleta = new matrix();
@@ -423,7 +440,7 @@ void linealColumnas(matrix* matriz){
 }
 void llenarMatrizC(matrix* matrizCompleta, matrix* matrizhijo){
 	node *temp = matrizhijo->head->right;
-	cout<<"primero: "<<temp->down->x<<","<<temp->down->y<<endl;
+	//cout<<"primero: "<<temp->down->x<<","<<temp->down->y<<endl;
 	while (temp->right!=NULL){
 		node *aux = temp->down;
 		if(aux->down == NULL){

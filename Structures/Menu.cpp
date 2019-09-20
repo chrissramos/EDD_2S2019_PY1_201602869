@@ -36,7 +36,12 @@ void entrarConfig(string nombre, string padre){
 		getline(archivo,line,archivo.widen('\n'));
 		if(line.size()>1){
 			size_t tam = line.length();
-			line.erase(tam-1);
+			string cad = line.substr(tam-1);
+			cout<<"Dato ULTIMA de:"<<line<<" es: "<<cad<<endl;
+			if(cad=="\n"){
+				line.erase(tam-1);
+			}
+			//line.erase(tam-1);
 			data.push_back(line);
 		}
 	}
@@ -215,9 +220,16 @@ void archivoInicial(string nombre, linked *lista){
 	// en data[2] en adelante son puras capas
 	for(int q =2;q<data.size();q++){
 		//cout<<"Entro a FOR INICIAL"<<endl;
+		
 		string capa = data[q];
+		
 		size_t tam = capa.length();
-		capa.erase(tam-1);
+		string cad = capa.substr(tam-1);
+		//cout<<"LETRA ULTIMA de:"<<capa<<" es: "<<cad<<endl;
+		if(cad!="v"){
+			capa.erase(tam-1);
+		}
+		
 		//cout<<"enviara capa: "<<capa<<endl;
 
 		//system("cmd /c pause");
@@ -376,9 +388,11 @@ void selectImage(){
 	system("cmd /c pause"); 
 }
 string decToHexa(int n){
-	if(n == 0){
-		return "00";
-	}
+	if(n < 10){
+        //cout<<"entro cero"<<endl;
+        return "0"+to_string(n);
+        
+    }
 		string color;
 		// char array to store hexadecimal number 
 		char hexaDeciNum[100]; 
@@ -443,10 +457,10 @@ string llenarCss(matrix* matriz){
 	}
 	return contenido;
 }
-void armarCss(string padre){
+void armarCss(string padre, linked* lista ){
 	//system("cmd /c cls");
 	string contenidoChild;
-	linked *lista = imagenSelNode->getLista();
+	//linked *lista = imagenSelNode->getLista();
 	matrix *matrizCompleta = new matrix();
 	for(int i = 0; i< lista->size();i++){
 		//cout<<"entro  a for indiceL "<<i<<endl;
@@ -461,6 +475,8 @@ void armarCss(string padre){
 	int cantidadN;
 	int canvasW = imagenSelNode->getImageW() * imagenSelNode->getPixelW();
 	int canvasH = imagenSelNode->getImageH() * imagenSelNode->getPixelH();
+	cout<<"Valores w y h"<<canvasW<<" y "<<canvasH<<endl;
+	system("cmd /c pause"); 
 	ofstream css;
 	string nombre = imagenSelNode->getKey();
 	css.open("Exports/"+nombre+".css");
@@ -484,31 +500,113 @@ void exportHtml(){
 	html.open("Exports/"+nombre+".html");
 	html << "<!DOCTYPE html><html> \n <head> <link rel=\"stylesheet\" href=\"" + nombre +".css \" >\n" ;
 	html << "</head> \n <body> \n <div class=\" canvas \"> \n";
-	
-	//obtener cantidad de pixeles, generar matrix completa recorriendo caps
-	
-	/*linked *lista = imagenSelNode->getLista();
-	matrix *matrizCompleta = new matrix();
-	
-	for(int i = 0; i< lista->size();i++){
-		
-		nodeList *nodoLista = lista->getNodo(i+1);
-		matrix *matrizcapa = nodoLista->getMatrix();
-		
-		tree->llenarMatrizC(matrizCompleta,matrizcapa);
-	}
-	*/
-	
 	for(int j = 0;j<cantDivs;j++){
 		html << "<div class = \"pixel\"></div> \n";
 		
 	}
 	html << "</div> \n </body> \n </html>";
 	html.close();
-	armarCss("");
+	armarCss("",imagenSelNode->getLista());
 	//system("cmd /c pause"); 
 
 }
+
+void exportFiltro(linked* lista){
+	int cantidadN =0;
+	ofstream html;
+	string nombre = imagenSelNode->getKey();
+	int cantDivs = imagenSelNode->getImageW() * imagenSelNode->getImageH();
+	html.open("Exports/"+nombre+".html");
+	html << "<!DOCTYPE html><html> \n <head> <link rel=\"stylesheet\" href=\"" + nombre +".css \" >\n" ;
+	html << "</head> \n <body> \n <div class=\" canvas \"> \n";
+	for(int j = 0;j<cantDivs;j++){
+		html << "<div class = \"pixel\"></div> \n";
+		
+	}
+	html << "</div> \n </body> \n </html>";
+	html.close();
+	armarCss("", lista);
+}
+void llenarMatrizC(linked* listaCapas, matrix* matrizhijo, int key){
+	matrix *m = new matrix();
+	node *temp = matrizhijo->head->right;
+	//cout<<"primero: "<<temp->down->x<<","<<temp->down->y<<endl;
+	while (temp->right!=NULL){
+		node *aux = temp->down;
+		if(aux->down == NULL){
+			//insertar aqui
+			m->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+			//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+		}
+		while (aux->down!=NULL)
+		{
+			//insertar aqui
+			m->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+			//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			aux = aux->down;
+			if (aux->down == NULL)
+			{
+				//insertar aqui
+				m->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			}
+			
+		}		
+		temp = temp->right;
+		if (temp->right == NULL)
+		{
+			node *aux2 = temp->down;
+			while (aux2->down!=NULL)
+			{
+				//insertar aqui
+				m->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+				//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+				aux2 = aux2->down;
+				if (aux2->down == NULL)
+				{
+					//insertar aqui
+					m->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+					//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+				}
+			}
+			
+		}
+	}
+	listaCapas->add(new nodeList(key,m));
+	cout<<"\n Termino UNA MATRIZ"<<endl;
+
+}
+matrix* negativoDos(matrix* matrizH){
+	node *temp = matrizH->head;
+	cout<<"primero: "<<temp->x<<","<<temp->y<<endl;
+	while(temp!=NULL){
+		node *aux = temp->right;
+		while(aux!=NULL){
+			aux->r =255- aux->r;
+			aux->g =255- aux->g;
+			aux->b =255- aux->b;
+			cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<endl;
+			aux = aux->right;
+			/*if(aux->right == NULL){
+				cout<<"RIGHT Estamos en: X:"<<aux->x<<","<<aux->y<<endl;
+				aux->r =255- aux->r;
+				aux->g =255- aux->g;
+				aux->b =255- aux->b;
+			}*/
+		}
+		cout<<"Salto de linea"<<" valores de temp: "<<temp->x<<","<<temp->y<<endl;
+		temp = temp->down;	
+		/*if(temp->down == NULL){
+				cout<<"RIGHTD Estamos en: X:"<<temp->x<<","<<temp->y<<endl;
+				//aux->r =255- aux->r;
+				//aux->g =255- aux->g;
+				//aux->b =255- aux->b;
+		}*/
+		
+	}
+	return matrizH;
+}
+
 matrix* negativo(matrix* matrizH){
 	
 	node *temp = matrizH->head->right;
@@ -521,7 +619,7 @@ matrix* negativo(matrix* matrizH){
 				aux->b =255- aux->b;
 				aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
 				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
-				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
 			}
 			while (aux->down!=NULL)
 			{
@@ -531,7 +629,7 @@ matrix* negativo(matrix* matrizH){
 				aux->b =255- aux->b;
 				aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
 				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
-				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
 				aux = aux->down;
 				if (aux->down == NULL)
 				{
@@ -541,7 +639,7 @@ matrix* negativo(matrix* matrizH){
 					aux->b =255- aux->b;
 					aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
 					//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
-					//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+					cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
 				}
 				
 			}		
@@ -557,7 +655,7 @@ matrix* negativo(matrix* matrizH){
 					aux->b =255- aux->b;
 					aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
 					//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
-					//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+					cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
 					aux2 = aux2->down;
 					if (aux2->down == NULL)
 					{
@@ -565,6 +663,76 @@ matrix* negativo(matrix* matrizH){
 						aux->r =255- aux->r;
 						aux->g =255- aux->g;
 						aux->b =255- aux->b;
+						aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
+						//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+						cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+					}
+				}
+				
+			}
+	}
+	return matrizH;
+}
+matrix* escalaGris(matrix* matrizH){
+	node *temp = matrizH->head->right;
+		while (temp->right!=NULL){
+			node *aux = temp->down;
+			if(aux->down == NULL){
+				//insertar aqui
+				int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+				aux->r =suma;
+				aux->g =suma;
+				aux->b =suma;
+				aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
+				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+			}
+			while (aux->down!=NULL)
+			{
+				//insertar aqui
+				int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+				aux->r =suma;
+				aux->g =suma;
+				aux->b =suma;
+				aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
+				//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+				//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				aux = aux->down;
+				if (aux->down == NULL)
+				{
+					//insertar aqui
+					int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+					aux->r =suma;
+					aux->g =suma;
+					aux->b =suma;
+					aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
+					//matrizCompleta->add(aux->x,aux->y,aux->r,aux->g,aux->b);
+					//cout<<"Estamos en: X:"<<aux->x<<","<<aux->y<<"  tiene color: "<< aux->color<<endl;
+				}
+				
+			}		
+			temp = temp->right;
+			if (temp->right == NULL)
+			{
+				node *aux2 = temp->down;
+				while (aux2->down!=NULL)
+				{
+					//insertar aqui
+					int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+					aux->r =suma;
+					aux->g =suma;
+					aux->b =suma;
+					aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
+					//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
+					//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
+					aux2 = aux2->down;
+					if (aux2->down == NULL)
+					{
+						//insertar aqui
+						int suma = (int)(aux->r * 0.3 + aux->g*0.59 + aux->b * 0.11) ;
+						aux->r =suma;
+						aux->g =suma;
+						aux->b =suma;
 						aux->color = "\"" + to_string(aux->r) + "," + to_string(aux->g) + "," + to_string(aux->b) + "\"";
 						//matrizCompleta->add(aux2->x,aux2->y,aux2->r,aux2->g,aux2->b);
 						//cout<<"Estamos en: X:"<<aux2->x<<","<<aux2->y<<"  tiene color: "<< aux2->color<<endl;
@@ -603,13 +771,13 @@ void menuPrincipal(){
 				cin>>nombreImagen;
 				linked *list = new linked();
 				archivoInicial(nombreImagen,list);
-				/*cout<<"Datos iniciales::"<<endl;
+				cout<<"Datos iniciales::"<<endl;
 					cout<<"datos:::::"<<endl;
 					cout<<imagewidht<<endl;
 					cout<<imageheight<<endl;
 					cout<<pixelwidht<<endl;
-					cout<<pixelheight<<endl;*/
-				//system("cmd /c pause");
+					cout<<pixelheight<<endl;
+				system("cmd /c pause");
 				tree->add(new Node(nombreImagen, correlativo,list,imageheight,imagewidht,pixelheight,pixelwidht));
 
 				correlativo++;
@@ -630,6 +798,7 @@ void menuPrincipal(){
 				cin>>imgSel;
 				imagenSelNode = tree->returnImagenSel(imgSel);
 				cout<<"Imagen seleccionada es: "<<imagenSelNode->getKey()<<endl;
+				listaCircular = new linkedCircular();
 				/// pedir numero 1 es el primero , y devolver algun parametro de ese arbol
 				//nodeCircular *cabezaC = listaCircular->getHead();
 				//listaCircular->head = NULL;
@@ -641,6 +810,7 @@ void menuPrincipal(){
 			case '3':{
 				system("cmd /c cls"); 
 				cout << "filtros.\n";
+				//listaCircular = new linkedCircular();
 				//hacer copia de la imagen seleccinonada
 				Node *copia = imagenSelNode;
 				linked *listaCopia = imagenSelNode->getLista();
@@ -658,7 +828,15 @@ void menuPrincipal(){
 				switch (numFiltro)
 				{
 				case 1:{//negativo
-						Node *copiaNodo = imagenSelNode;
+						Node *copiaNodo = new Node(imagenSelNode->getKey(),imagenSelNode->getId(),imagenSelNode->getLista(),imagenSelNode->getImageH(),imagenSelNode->getImageW(),imagenSelNode->getPixelH(),imagenSelNode->getPixelW());
+						//copiando
+						linked *listaCopiaNueva = new linked();
+						
+						for(int x =0; x<imagenSelNode->getLista()->size();x++){
+							nodeList* nodolista = imagenSelNode->getLista()->getNodo(x+1);
+							llenarMatrizC(listaCopiaNueva,nodolista->getMatrix(), nodolista->getKey());
+						}
+
 						cout<<"-------------------Negative-------------\n\n";
 						cout<<"1 - Filtro a imagen completa"<<endl;
 						cout<<"2 - Filtro a una Capa en especifico "<<endl;
@@ -667,16 +845,33 @@ void menuPrincipal(){
 						cin>>opcion;
 						if(opcion == 1){
 							linked *listaCapas = copiaNodo->getLista();
-							matrix *matrizC;
-							for (int i = 0; i < listaCapas->size(); i++)
+							linked *listaNuevaF = new linked();
+							matrix *matrizC = new matrix();
+							for (int i = 0; i < listaCopiaNueva->size(); i++)
 							{
 								
-								nodeList *nodoCapa = listaCapas->getNodo(i+1);
+								nodeList *nodoCapa = listaCopiaNueva->getNodo(i+1);
+								int key = nodoCapa->getKey();
 								matrix *matrizH = nodoCapa->getMatrix();
-								matrizH = negativo(matrizH);
-								matrizH->graphMatrix("","");
+								matrizH = negativoDos(matrizH);
+								nodeList *nodoNuevo = new nodeList(key, matrizH);
+								listaNuevaF->add(nodoNuevo);
+								//llenarMatrizC(matrizC, matrizH);
+								
+								//matrizH->graphMatrix("","");
 							}
-							
+							listaCircular->add(new nodeCircular("Negative", listaNuevaF));
+							//listaCircular->graph();
+
+							//verificar valores en listanueva y lsita seleccionada
+							nodeList *pruebaLista = listaNuevaF->getNodo(1);
+							nodeList *pruebaImagen = imagenSelNode->getLista()->getNodo(1);
+							cout<<"probando imagenes"<<endl;
+							string color1 =pruebaLista->getMatrix()->head->right->down->color;
+							string color2 =pruebaImagen->getMatrix()->head->right->down->color;
+							cout<<color1<<" y el otro: "<<color2<<endl;
+							system("cmd /c pause");
+							//listaCircular->add(new )
 						}else if(opcion == 2){
 
 						}else{
@@ -684,18 +879,116 @@ void menuPrincipal(){
 						}
 					}	
 					break;
-				case 2://escala grises
-					cout<<"1 - Filtro a imagen completa"<<endl;
-					cout<<"2 - Filtro a una Capa en especifico "<<endl;
-					cout<<"Ingrese la opcion deseada: "<<endl;
+				case 2:{//escala grises
+
+					Node *copiaNodo = new Node(imagenSelNode->getKey(),imagenSelNode->getId(),imagenSelNode->getLista(),imagenSelNode->getImageH(),imagenSelNode->getImageW(),imagenSelNode->getPixelH(),imagenSelNode->getPixelW());
+						//copiando
+						linked *listaCopiaNueva = new linked();
+						
+						for(int x =0; x<imagenSelNode->getLista()->size();x++){
+							nodeList* nodolista = imagenSelNode->getLista()->getNodo(x+1);
+							llenarMatrizC(listaCopiaNueva,nodolista->getMatrix(), nodolista->getKey());
+						}
+
+						cout<<"-------------------GRAYSCALE-------------\n\n";
+						cout<<"1 - Filtro a imagen completa"<<endl;
+						cout<<"2 - Filtro a una Capa en especifico "<<endl;
+						cout<<"Ingrese la opcion deseada: "<<endl;
+						int opcion =0;
+						cin>>opcion;
+						if(opcion == 1){
+							linked *listaCapas = copiaNodo->getLista();
+							linked *listaNuevaF = new linked();
+							matrix *matrizC = new matrix();
+							for (int i = 0; i < listaCopiaNueva->size(); i++)
+							{
+								
+								nodeList *nodoCapa = listaCopiaNueva->getNodo(i+1);
+								int key = nodoCapa->getKey();
+								matrix *matrizH = nodoCapa->getMatrix();
+								matrizH = escalaGris(matrizH);
+								nodeList *nodoNuevo = new nodeList(key, matrizH);
+								listaNuevaF->add(nodoNuevo);
+								//llenarMatrizC(matrizC, matrizH);
+								
+								//matrizH->graphMatrix("","");
+							}
+							listaCircular->add(new nodeCircular("GRAYSCALE", listaNuevaF));
+							//listaCircular->graph();
+
+							//verificar valores en listanueva y lsita seleccionada
+							nodeList *pruebaLista = listaNuevaF->getNodo(1);
+							nodeList *pruebaImagen = imagenSelNode->getLista()->getNodo(1);
+							cout<<"probando imagenes"<<endl;
+							string color1 =pruebaLista->getMatrix()->head->right->down->color;
+							string color2 =pruebaImagen->getMatrix()->head->right->down->color;
+							cout<<color1<<" y el otro: "<<color2<<endl;
+							system("cmd /c pause");
+							//listaCircular->add(new )
+						}else if(opcion == 2){
+
+						}else{
+							cout<<"Numero invalido"<<endl;
+						}
+
+					}
 					break;
 				case 3://mirrow
 					//falta sub menu
 					break;
-				case 4://collage
-					cout<<"1 - Filtro a imagen completa"<<endl;
-					cout<<"2 - Filtro a una Capa en especifico "<<endl;
-					cout<<"Ingrese la opcion deseada: "<<endl;
+				case 4:{//collage
+						Node *copiaNodo = new Node(imagenSelNode->getKey(),imagenSelNode->getId(),imagenSelNode->getLista(),imagenSelNode->getImageH(),imagenSelNode->getImageW(),imagenSelNode->getPixelH(),imagenSelNode->getPixelW());
+						//copiando
+						linked *listaCopiaNueva = new linked();
+						
+						for(int x =0; x<imagenSelNode->getLista()->size();x++){
+							nodeList* nodolista = imagenSelNode->getLista()->getNodo(x+1);
+							llenarMatrizC(listaCopiaNueva,nodolista->getMatrix(), nodolista->getKey());
+						}
+
+						cout<<"-------------------Collage-------------\n\n";
+						cout<<"1 - Filtro a imagen completa"<<endl;
+						cout<<"2 - Filtro a una Capa en especifico "<<endl;
+						cout<<"Ingrese la opcion deseada: "<<endl;
+						int opcion =0;
+						cin>>opcion;
+						if(opcion == 1){
+							linked *listaCapas = copiaNodo->getLista();
+							linked *listaNuevaF = new linked();
+							matrix *matrizC = new matrix();
+							for (int i = 0; i < listaCopiaNueva->size(); i++)
+							{
+								
+								nodeList *nodoCapa = listaCopiaNueva->getNodo(i+1);
+								int key = nodoCapa->getKey();
+								matrix *matrizH = nodoCapa->getMatrix();
+								matrizH = escalaGris(matrizH);
+								nodeList *nodoNuevo = new nodeList(key, matrizH);
+								listaNuevaF->add(nodoNuevo);
+								//llenarMatrizC(matrizC, matrizH);
+								
+								//matrizH->graphMatrix("","");
+							}
+							listaCircular->add(new nodeCircular("GRAYSCALE", listaNuevaF));
+							//listaCircular->graph();
+
+							//verificar valores en listanueva y lsita seleccionada
+							nodeList *pruebaLista = listaNuevaF->getNodo(1);
+							nodeList *pruebaImagen = imagenSelNode->getLista()->getNodo(1);
+							cout<<"probando imagenes"<<endl;
+							string color1 =pruebaLista->getMatrix()->head->right->down->color;
+							string color2 =pruebaImagen->getMatrix()->head->right->down->color;
+							cout<<color1<<" y el otro: "<<color2<<endl;
+							system("cmd /c pause");
+							//listaCircular->add(new )
+						}else if(opcion == 2){
+
+						}else{
+							cout<<"Numero invalido"<<endl;
+						}
+
+
+					}
 					break;
 				case 5://mosaic
 					cout<<"1 - Filtro a imagen completa"<<endl;
@@ -756,7 +1049,23 @@ void menuPrincipal(){
 			case '5':
 				system("cmd /c cls"); 
 				cout << "export image.\n";
-				exportHtml();
+				if(listaCircular!=NULL){
+					cout<<"Desea exportar la imagen originar o un filtro aplicado?"<<endl;
+					cout<<"1---ORIGINAL\n2----Filtro"<<endl;
+					int opcion = 0;
+					cin>>opcion;
+					if(opcion == 1){
+						exportHtml();
+					}else if(opcion ==2){
+						nodeCircular *circular = listaCircular->getHead();
+						exportFiltro(circular->getLista());
+					}else{
+						cout<<"numero Invalido"<<endl;
+					}
+				}else{
+					exportHtml();
+				}
+				
 				system("cmd /c pause");
 				break;
             case '6':
