@@ -104,16 +104,27 @@ class linkedCircular{
         // system("cmd /c ls");
         system("cmd /c Circular.png");
     }
-    string mostarFiltros(){
+    void mostarFiltros(){
         string filtros ="";
         if(head!=NULL){
             nodeCircular *temp = head;
-            while(temp->getSiguiente()!=head){
-
-            }
-
+            int contador = 1;
+            system("cmd /c cls"); 
+            cout<<"-----------------------Lista de filtros-----------------------"<<endl;
+            if(temp->getSiguiente() == head){
+                 cout<<contador<<" - "<<temp->getFiltro()<<endl;
+                  contador++;
+            }else{
+                while(temp->getSiguiente()!=head){
+                    cout<<contador<<" - "<<temp->getFiltro()<<endl;
+                    contador++;
+                    temp = temp->getSiguiente();
+                    cout<<contador<<" - "<<temp->getFiltro()<<endl;
+                }
+            }    
+            
         }
-        return filtros;
+       
     }
     nodeCircular* getNodo(int pos){
         if(pos == 1){

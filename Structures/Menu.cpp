@@ -944,7 +944,7 @@ void menuPrincipal(){
 								//matrizH->graphMatrix("","");
 							}
 							listaCircular->add(new nodeCircular("GRAYSCALE", listaNuevaF));
-							//listaCircular->graph();
+							listaCircular->graph();
 
 							//verificar valores en listanueva y lsita seleccionada
 							nodeList *pruebaLista = listaNuevaF->getNodo(1);
@@ -1032,7 +1032,7 @@ void menuPrincipal(){
 				}
 				break;
 
-			case '4':{
+			case '4':{//manual editing 
 				system("cmd /c cls"); 
 				cout << "manual editing.\n";
 				cout<<"1-------OG IMAGE"<<endl;
@@ -1076,7 +1076,7 @@ void menuPrincipal(){
 				}
 				break;
  
-			case '5':
+			case '5': //export image
 				system("cmd /c cls"); 
 				cout << "export image.\n";
 				if(listaCircular!=NULL){
@@ -1088,8 +1088,15 @@ void menuPrincipal(){
 						exportHtml();
 					}else if(opcion ==2){
 						//mostrar filtros
-						nodeCircular *circular = listaCircular->getHead();
-						exportFiltro(circular->getLista());
+						listaCircular->mostarFiltros();
+						cout<<"Ingrese el numero del filtro a exportar..."<<endl;
+						int opcion = 0;
+						cin>>opcion;
+						nodeCircular *nodoFiltro = listaCircular->getNodo(opcion);
+						//cout<<"Se obtuvo el filtro: "<<nodoFiltro->getFiltro();
+						exportFiltro(nodoFiltro->getLista());
+						//nodeCircular *circular = listaCircular->getHead();
+						//exportFiltro(circular->getLista());
 					}else{
 						cout<<"numero Invalido"<<endl;
 					}
