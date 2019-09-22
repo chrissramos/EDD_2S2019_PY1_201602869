@@ -874,12 +874,11 @@ void menuPrincipal(){
 						int opcion =0;
 						cin>>opcion;
 						if(opcion == 1){
-							linked *listaCapas = copiaNodo->getLista();
+							//linked *listaCapas = copiaNodo->getLista();
 							linked *listaNuevaF = new linked();
 							matrix *matrizC = new matrix();
 							for (int i = 0; i < listaCopiaNueva->size(); i++)
 							{
-								
 								nodeList *nodoCapa = listaCopiaNueva->getNodo(i+1);
 								int key = nodoCapa->getKey();
 								matrix *matrizH = nodoCapa->getMatrix();
@@ -892,17 +891,20 @@ void menuPrincipal(){
 							}
 							listaCircular->add(new nodeCircular("Negative", listaNuevaF));
 							//listaCircular->graph();
-
 							//verificar valores en listanueva y lsita seleccionada
-							nodeList *pruebaLista = listaNuevaF->getNodo(1);
-							nodeList *pruebaImagen = imagenSelNode->getLista()->getNodo(1);
-							cout<<"probando imagenes"<<endl;
-							string color1 =pruebaLista->getMatrix()->head->right->down->color;
-							string color2 =pruebaImagen->getMatrix()->head->right->down->color;
-							cout<<color1<<" y el otro: "<<color2<<endl;
+							
 							system("cmd /c pause");
 							//listaCircular->add(new )
 						}else if(opcion == 2){
+							// por capas
+							cout<<"Esta imagen tiene: "<<listaCopiaNueva->size()<<" capas"<<endl;
+							cout<<"Ingrese el numero de capa a graficar"<<endl;
+							int numeroCapa =0;
+							cin>>numeroCapa;
+							nodeList *nodoListaCopia = listaCopiaNueva->getNodo(numeroCapa);
+							matrix *matrizcapa = nodoListaCopia->getMatrix();
+							matrizcapa = negativoDos(matrizcapa);
+							listaCircular->add(new nodeCircular("Negative-Capa", listaCopiaNueva));
 
 						}else{
 							cout<<"Numero invalido"<<endl;
@@ -944,18 +946,22 @@ void menuPrincipal(){
 								//matrizH->graphMatrix("","");
 							}
 							listaCircular->add(new nodeCircular("GRAYSCALE", listaNuevaF));
-							listaCircular->graph();
+							//listaCircular->graph();
 
 							//verificar valores en listanueva y lsita seleccionada
-							nodeList *pruebaLista = listaNuevaF->getNodo(1);
-							nodeList *pruebaImagen = imagenSelNode->getLista()->getNodo(1);
-							cout<<"probando imagenes"<<endl;
-							string color1 =pruebaLista->getMatrix()->head->right->down->color;
-							string color2 =pruebaImagen->getMatrix()->head->right->down->color;
-							cout<<color1<<" y el otro: "<<color2<<endl;
+							
 							system("cmd /c pause");
 							//listaCircular->add(new )
 						}else if(opcion == 2){
+							// por capas
+							cout<<"Esta imagen tiene: "<<listaCopiaNueva->size()<<" capas"<<endl;
+							cout<<"Ingrese el numero de capa a graficar"<<endl;
+							int numeroCapa =0;
+							cin>>numeroCapa;
+							nodeList *nodoListaCopia = listaCopiaNueva->getNodo(numeroCapa);
+							matrix *matrizcapa = nodoListaCopia->getMatrix();
+							matrizcapa = escalaGrisDos(matrizcapa);
+							listaCircular->add(new nodeCircular("GrayScale-Capa", listaCopiaNueva));
 
 						}else{
 							cout<<"Numero invalido"<<endl;
@@ -1093,8 +1099,9 @@ void menuPrincipal(){
 						int opcion = 0;
 						cin>>opcion;
 						nodeCircular *nodoFiltro = listaCircular->getNodo(opcion);
-						//cout<<"Se obtuvo el filtro: "<<nodoFiltro->getFiltro();
+						cout<<"Se obtuvo el filtro: "<<nodoFiltro->getFiltro();
 						exportFiltro(nodoFiltro->getLista());
+						system("cmd /c cls"); 
 						//nodeCircular *circular = listaCircular->getHead();
 						//exportFiltro(circular->getLista());
 					}else{
