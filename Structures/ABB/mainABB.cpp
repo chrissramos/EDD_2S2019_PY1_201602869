@@ -284,7 +284,7 @@ void mostarCapasImagen(int numImagen){
 				
 				//cout<<"dato: "<<matriz->head->right->down->color<<endl;
 
-				//matriz->graphMatrix(" ", " ");
+				matriz->graphMatrix(" ", " ");
 			}else if(opcionCapaToda == 2){
 				//aqui juntar las capas en 1 sola y graficar
 				matrix *matrizCompleta = new matrix();
